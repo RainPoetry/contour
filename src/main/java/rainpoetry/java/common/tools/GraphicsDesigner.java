@@ -64,7 +64,6 @@ public class GraphicsDesigner {
 	public void create(String path) {
 		try {
 			BufferedImage srcImg = ImageIO.read(src);
-			Tuple2<Integer, Integer> start = new Tuple2<>(0, 0);
 			int width = srcImg.getWidth();
 			int height = srcImg.getHeight();
 			int left = 0, top = 0, right = 0, bottom = 0;
