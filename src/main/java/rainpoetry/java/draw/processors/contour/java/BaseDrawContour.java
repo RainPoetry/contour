@@ -6,6 +6,8 @@ package rainpoetry.java.draw.processors.contour.java;
  * description:
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rainpoetry.java.draw.bean.DrawStyle;
 import wContour.Contour;
 import wContour.Global.PointD;
@@ -26,6 +28,8 @@ import java.util.List;
 import static rainpoetry.java.draw.processors.contour.java.JavaContourConfig.*;
 
 public abstract class BaseDrawContour extends BaseContourIdentify {
+
+	private Logger logger = LoggerFactory.getLogger(BaseDrawContour.class);
 
 	private static final int DEFAULT_ALGORITHM_ROWS = 200;
 	private static final int DEFAULT_ALGORITHM_COLS = 200;
@@ -66,14 +70,18 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 			before();
 			// 等值线图风格设置
 			styleChange();
+			logger.info("calculating .....");
 			// 算法计算
 			algorithm();
 			String filePath = contourConf.getString(JavaContourConfig.FILE_PATH);
 			String tmpPath = filePath + TMP_FILE_SUFFIX;
+			logger.info("paint basic picture .....");
 			// 绘制底图
 			drawBasic(tmpPath);
+			logger.info("paint contour picture .....");
 			// 使用底图来裁剪等值线图
 			drawContour(filePath, tmpPath);
+			logger.info("paint legend picture .....");
 			LegendBuilder.newInstance().colors(colorArray)
 					.values(colorValue)
 					.unit(contourConf.getString(JavaContourConfig.UNIT))
