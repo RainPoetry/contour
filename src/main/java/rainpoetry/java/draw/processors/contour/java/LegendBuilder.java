@@ -85,11 +85,8 @@ public class LegendBuilder {
 		// 图例方向
 		if (legendV) {
 			// 图例纵向显示
-			legendWidth = 20;
-			if (this.colors.length >= 7) {
-				legendHeight = 17;
-			} else
-				legendHeight = 50;
+			legendWidth = 50;
+			legendHeight = 30;
 			cache.start = new Tuple2<>(5,20);
 			rheight = (int) (legendHeight * colors.length + 50);
 			rwidth = legendWidth * 3;
@@ -122,7 +119,7 @@ public class LegendBuilder {
 			g.setColor(Color.black);
 			g.drawRect(startX, startY + i * cache.legendHeight, cache.legendWidth,
 					cache.legendHeight);
-			g.setFont(new Font("TimesRoman", Font.BOLD, 11));
+			g.setFont(new Font("微软雅黑", Font.BOLD, 20));
 			if (Math.abs(values[i] - (int) values[i]) > 0.01) {
 				g.drawString(String.valueOf(new java.text.DecimalFormat("0.0")
 								.format(values[i])) + unit, startX + cache.legendWidth + 5,
@@ -146,7 +143,9 @@ public class LegendBuilder {
 			g.setColor(Color.black);
 			g.drawRect(startX + i * cache.legendHeight, startY, cache.legendWidth,
 					cache.legendHeight);
-			g.setFont(new Font("TimesRoman", Font.BOLD, 11));
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setFont(new Font("微软雅黑", Font.BOLD, 20));
 			if (Math.abs(values[i] - (int) values[i]) > 0.01) {
 				g.drawString(String.valueOf(new java.text.DecimalFormat("0.0")
 								.format(values[i])) + unit, startX + i * cache.legendWidth - 10,

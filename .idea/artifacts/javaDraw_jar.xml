@@ -3,10 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/javaDraw_jar</output-path>
     <root id="archive" name="javaDraw.jar">
       <element id="module-output" name="javaDraw" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/libs/wContour.jar" path-in-jar="/" />
       <element id="extracted-dir" path="F:/1_file/java/等值线图/wContour.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-log4j12/1.7.25/slf4j-log4j12-1.7.25.jar" path-in-jar="/" />
     </root>
   </artifact>

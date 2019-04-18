@@ -15,4 +15,12 @@ public class Tuple2<A, B> {
 		this._1 = a;
 		this._2 = b;
 	}
+
+	@Override
+	public String toString() {
+		return "(" +
+				_1 +
+				","+ _2 +
+				')';
+	}
 }

@@ -37,13 +37,13 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>wContour.cc</groupId>
-            <artifactId>cc-wContour</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/wContour.jar</systemPath>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>wContour.cc</groupId>-->
+            <!--<artifactId>cc-wContour</artifactId>-->
+            <!--<version>1.0.0</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${basedir}/libs/wContour.jar</systemPath>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -60,30 +60,6 @@
                     <encoding>UTF-8</encoding>
 
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.5.2</version>
-                <executions>
-                    <execution>
-                        <id>install-external</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <file>${basedir}/libs/wContour.jar</file>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>wContour.cc</groupId>
-                            <artifactId>cc-wContour</artifactId>
-                            <version>1.0.0</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- 依赖的 jar 包放到指定的文件夹中 -->
