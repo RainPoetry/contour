@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class LegendBuilder {
 
@@ -112,8 +113,8 @@ public class LegendBuilder {
 		// 纵向颜色参照对比表
 		int startY = cache.start._2;
 		int startX = cache.start._1;
-		for (int i = 0; i < this.colors.length; i++) {
-			g.setColor(colors[i]);
+		for (int i = 0; i < this.colors.length-1; i++) {
+			g.setColor(colors[i+1]);
 			g.fillRect(startX, startY + i * cache.legendHeight, cache.legendWidth,
 					cache.legendHeight);
 			g.setColor(Color.black);

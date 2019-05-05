@@ -9,21 +9,25 @@ package rainpoetry.java.draw.processors.contour.java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rainpoetry.java.draw.bean.DrawStyle;
+import rainpoetry.java.draw.bean.ExternData;
+import rainpoetry.java.draw.bean.Tuple3;
 import wContour.Contour;
-import wContour.Global.PointD;
-import wContour.Global.Polygon;
 import wContour.Global.Border;
+import wContour.Global.PointD;
 import wContour.Global.PolyLine;
+import wContour.Global.Polygon;
 import wContour.Interpolate;
 
 import javax.imageio.ImageIO;
-
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static rainpoetry.java.draw.processors.contour.java.JavaContourConfig.*;
 
@@ -51,19 +55,18 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 	// 区域线控制
 	private DrawStyle area_line_style = new DrawStyle(true, 1, Color.gray);
 	// 展示其他的经纬度数据
-	private List<Map<String, String>> extraList = new ArrayList<>();
-
+	private ExternData externData;
 
 	private List<Polygon> contourPolygons;
 
-	private double[][] discreteData;                    // 统计数据
-	private double[] colorValue;                        // 色标值
-	private Color[] colorArray;                            // 色标值
+	private double[][] discreteData;                         // 统计数据
+	private double[] colorValue;                             // 色标值
+	private Color[] colorArray;                              // 色标
 	private double left, right, top, bottom, scaleX = 1.0, scaleY = 1.0;
 	private int width, height;
 
 	List<List<PointD>> outLine;
-	Map<Double, Color> colorMap;
+	LinkedHashMap<Double, Color> colorMap;
 
 	public boolean draw() {
 		try {
@@ -89,7 +92,7 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 					.legend(contourConf.getBoolean(JavaContourConfig.LEGEND))
 					.create();
 			return true;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -121,7 +124,7 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		g2.setComposite(ac);
 
 		// 绘制等值面以及等值线
-		if ((fillContour || line_value_style.show) && contourPolygons.size() > 0)
+		if ((fillContour || line_style.show) && contourPolygons.size() > 0)
 			drawPolygon(g2, contourPolygons);
 		// 绘制轮廓线
 		if (outline_style.show)
@@ -129,6 +132,12 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		// 绘制经纬度数据
 		if (station_style.show)
 			drawStation(g2);
+		// 绘制扩充数据
+		if (externData != null)
+			drawExternData(g2);
+		// 绘制边界线
+		if (area_line_style.show)
+			drawBorder(g2, outLine, area_line_style.color, area_line_style.size);
 
 		// 重新打开等值面区域图像
 		File file = new File(tmpPath + ".png");
@@ -151,8 +160,25 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		ImageIO.write(image, "png", out);
 		out.close();
 		image.flush();
+		logger.info("图片路径： " + realPath + ".png");
 	}
 
+	public void drawExternData(Graphics2D g) {
+		if (externData.dataList.size() > 0) {
+			for (Tuple3<Double, Double, String> t : externData.dataList) {
+				int[] sxy = ToScreen(t._1, t._2);
+				if (externData.fill_oval.show) {
+					g.setColor(externData.fill_oval.color);
+					g.fillOval(sxy[0], sxy[1], externData.fill_oval.size, externData.fill_oval.size);
+				}
+				if (externData.text_style.show) {
+					g.setColor(externData.text_style.color);
+					g.setFont(externData.font);
+					g.drawString(t._3, externData.left + sxy[0], externData.top + sxy[1]);
+				}
+			}
+		}
+	}
 
 	public void drawStation(Graphics2D g) {
 		if (discreteData != null) {
@@ -169,24 +195,38 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		int lineSize = line_style.size;
 		for (Polygon polygon : polygons) {
 			Color fillColor = fillContour ? colorMap.get(polygon.LowValue) : null;
+			if (!polygon.IsHighCenter) {
+				Color tmp = colorArray[0];
+				for (Color c : colorArray) {
+					if (c == fillColor) {
+						fillColor = tmp;
+						break;
+					} else {
+						tmp = c;
+					}
+				}
+			}
 			PolyLine line = polygon.OutLine;
 			String msg = line_value_style.show ? line.Value + "" : null;
 			polygonLine(g, line.PointList, fillColor, lineColor, lineSize, line_value_style.size, msg);
 		}
 	}
 
+	// 绘制等直线
 	private void drawBorder(Graphics2D g, List<List<PointD>> outLine,
 							Color lineColor, int lineSize) {
 		for (List<PointD> polyLine : outLine)
 			polygonLine(g, polyLine, null, lineColor, lineSize, 0, null);
 	}
 
+	// 填充等值面 & 绘制等值线
 	private void borderPolygon(Graphics2D g, List<List<PointD>> outLine,
 							   Color fillColor) {
 		for (List<PointD> polyLine : outLine)
 			polygonLine(g, polyLine, fillColor, Color.BLACK, 5, 0, null);
 	}
 
+	// 填充等值面 & 绘制等值线 方法的接口
 	private void polygonLine(Graphics2D g, List<PointD> outLine,
 							 Color fillColor, Color lineColor, int lineSize,
 							 int fontSize, String msg) {
@@ -201,10 +241,12 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 			yPoints[j] = sxy[1];
 		}
 		java.awt.Polygon polygon = new java.awt.Polygon(xPoints, yPoints, len);
+		// 填充等值面
 		if (fillColor != null) {
 			g.setColor(fillColor);
 			g.fillPolygon(polygon);
 		}
+		// 绘制等值线
 		if (lineColor != null) {
 			BasicStroke bs = new BasicStroke(lineSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			g.setStroke(bs);
@@ -243,15 +285,11 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		return bi;
 	}
 
-	public void drawTable(String path) {
-
-	}
-
 	// 算法计算
 	private void algorithm() {
 		double[] x = new double[DEFAULT_ALGORITHM_ROWS];
 		double[] y = new double[DEFAULT_ALGORITHM_COLS];
-		int neighborNumber = colorValue.length -1 ;
+		int neighborNumber = colorValue.length - 1;
 
 		// 填充数据
 		Interpolate.CreateGridXY_Num(left, bottom, right, top, x, y);
@@ -273,6 +311,14 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		// 训练等值面
 		contourPolygons = Contour.tracingPolygons(gridData, contourLines,
 				borders, colorValue);
+		Collections.sort(contourPolygons, new Comparator<Polygon>() {
+			@Override
+			public int compare(Polygon o1, Polygon o2) {
+				return Double.compare(o1.LowValue, o2.LowValue);
+			}
+		});
+//		contourPolygons = contourPolygons.stream().filter(it->it.LowValue==24)
+//				.collect(Collectors.toList());
 	}
 
 	private void styleChange() {
@@ -304,11 +350,14 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 			case STYLE_AREA_LINE:
 				area_line_style = (DrawStyle) value;
 				break;
+			case STYLE_EXTERN_DATA:
+				externData = (ExternData) value;
+				break;
 		}
 	}
 
 	public void before() {
-		colorMap = new HashMap<>();
+		colorMap = new LinkedHashMap();
 		for (int i = 0; i < colorValue.length - 1; i++) {
 			colorMap.put(colorValue[i], colorArray[i]);
 		}
@@ -330,7 +379,7 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 		this.colorValue = colorValue;
 	}
 
-	public void model(int width ,int height, double minX, double maxX, double minY, double maxY) {
+	public void model(int width, int height, double minX, double maxX, double minY, double maxY) {
 		this.width = width;
 		this.height = height;
 		left = minX;

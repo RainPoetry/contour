@@ -6,7 +6,7 @@ package rainpoetry.java.draw.bean;
  * description:
  */
 
-public class Tuple5<A,B,C,D,E> {
+public class Tuple5<A, B, C, D, E> {
 
 	public final A _1;
 	public final B _2;
@@ -26,10 +26,10 @@ public class Tuple5<A,B,C,D,E> {
 	public String toString() {
 		return "(" +
 				_1 +
-				","+ _2 +
-				","+ _3 +
-				","+ _4 +
-				","+ _5 +
+				"," + _2 +
+				"," + _3 +
+				"," + _4 +
+				"," + _5 +
 				')';
 	}
 }
