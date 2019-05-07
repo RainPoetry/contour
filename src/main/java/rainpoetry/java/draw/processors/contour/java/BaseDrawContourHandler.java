@@ -61,7 +61,7 @@ public class BaseDrawContourHandler extends BaseDrawContour {
 		for (Tuple5<Double, Double, Integer, Integer, Integer> color : colors) {
 			double value_min = color._1;
 			double value_max = color._2;
-			valueArray[count] = value_max;
+			valueArray[count] = value_min;
 			colorArray[count] = new Color(color._3, color._4, color._5);
 			count++;
 		}

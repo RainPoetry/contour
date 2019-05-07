@@ -193,6 +193,7 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 	public void drawPolygon(Graphics2D g, List<Polygon> polygons) {
 		Color lineColor = line_style.show ? line_style.color : null;
 		int lineSize = line_style.size;
+		System.out.println(colorMap);
 		for (Polygon polygon : polygons) {
 			Color fillColor = fillContour ? colorMap.get(polygon.LowValue) : null;
 			if (!polygon.IsHighCenter) {
@@ -317,8 +318,6 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 				return Double.compare(o1.LowValue, o2.LowValue);
 			}
 		});
-//		contourPolygons = contourPolygons.stream().filter(it->it.LowValue==24)
-//				.collect(Collectors.toList());
 	}
 
 	private void styleChange() {
@@ -358,7 +357,7 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 
 	public void before() {
 		colorMap = new LinkedHashMap();
-		for (int i = 0; i < colorValue.length - 1; i++) {
+		for (int i = 0; i < colorValue.length-1; i++) {
 			colorMap.put(colorValue[i], colorArray[i]);
 		}
 	}

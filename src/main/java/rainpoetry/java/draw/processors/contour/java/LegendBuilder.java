@@ -7,7 +7,6 @@ package rainpoetry.java.draw.processors.contour.java;
  */
 
 import rainpoetry.java.draw.bean.Tuple2;
-import wContour.Global.PointD;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +14,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 public class LegendBuilder {
 
@@ -44,7 +42,7 @@ public class LegendBuilder {
 		return this;
 	}
 
-	public LegendBuilder values(double[] values){
+	public LegendBuilder values(double[] values) {
 		this.values = values;
 		return this;
 	}
@@ -64,9 +62,9 @@ public class LegendBuilder {
 					Transparency.TRANSLUCENT);
 			Graphics2D g2 = bi.createGraphics();
 			if (legendV) {
-				this.drawLegendTable_v(g2,cache);
+				this.drawLegendTable_v(g2, cache);
 			} else {
-				this.drawLegendTable_h(g2,cache);
+				this.drawLegendTable_h(g2, cache);
 			}
 			g2.dispose();
 			// 保存文件
@@ -88,7 +86,7 @@ public class LegendBuilder {
 			// 图例纵向显示
 			legendWidth = 50;
 			legendHeight = 30;
-			cache.start = new Tuple2<>(5,20);
+			cache.start = new Tuple2<>(5, 20);
 			rheight = (int) (legendHeight * colors.length + 50);
 			rwidth = legendWidth * 3;
 		} else {
@@ -98,7 +96,7 @@ public class LegendBuilder {
 			} else
 				legendWidth = 50;
 			legendHeight = 15;
-			cache.start = new Tuple2<>(15,20);
+			cache.start = new Tuple2<>(15, 20);
 			rheight = legendHeight * 3;
 			rwidth = legendWidth * colors.length + 100;
 		}
@@ -113,8 +111,9 @@ public class LegendBuilder {
 		// 纵向颜色参照对比表
 		int startY = cache.start._2;
 		int startX = cache.start._1;
-		for (int i = 0; i < this.colors.length-1; i++) {
-			g.setColor(colors[i+1]);
+		System.out.println(this.colors.length);
+		for (int i = 0; i < this.colors.length; i++) {
+			g.setColor(colors[i]);
 			g.fillRect(startX, startY + i * cache.legendHeight, cache.legendWidth,
 					cache.legendHeight);
 			g.setColor(Color.black);
@@ -126,7 +125,7 @@ public class LegendBuilder {
 								.format(values[i])) + unit, startX + cache.legendWidth + 5,
 						startY + i * cache.legendHeight + 4);
 			} else {
-				g.drawString(String.valueOf((int) values[i])+unit, startX
+				g.drawString(String.valueOf((int) values[i]) + unit, startX
 						+ cache.legendWidth + 5, startY + i * cache.legendHeight + 4);
 			}
 		}
@@ -164,7 +163,7 @@ public class LegendBuilder {
 		int legendHeight;
 		int rheight;
 		int rwidth;
-		Tuple2<Integer,Integer> start;
+		Tuple2<Integer, Integer> start;
 	}
 
 }
