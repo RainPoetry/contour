@@ -193,7 +193,6 @@ public abstract class BaseDrawContour extends BaseContourIdentify {
 	public void drawPolygon(Graphics2D g, List<Polygon> polygons) {
 		Color lineColor = line_style.show ? line_style.color : null;
 		int lineSize = line_style.size;
-		System.out.println(colorMap);
 		for (Polygon polygon : polygons) {
 			Color fillColor = fillContour ? colorMap.get(polygon.LowValue) : null;
 			if (!polygon.IsHighCenter) {

@@ -111,7 +111,6 @@ public class LegendBuilder {
 		// 纵向颜色参照对比表
 		int startY = cache.start._2;
 		int startX = cache.start._1;
-		System.out.println(this.colors.length);
 		for (int i = 0; i < this.colors.length; i++) {
 			g.setColor(colors[i]);
 			g.fillRect(startX, startY + i * cache.legendHeight, cache.legendWidth,
