@@ -40,11 +40,9 @@ public class JavaContourConfig extends AbstractConfig {
 	public static final String LATITUDE_LEFT = "latitude.left";
 	public static final String LATITUDE_RIGHT = "latitude.right";
 	public static final String WIDTH = "width";
-	public static final String HEIGHT = "heunitight";
+	public static final String HEIGHT = "height";
 	public static final String UNIT = "";
 	public static final String LEGEND = "legend";
-
-
 
 	static {
 		definition = new ConfigDef()
