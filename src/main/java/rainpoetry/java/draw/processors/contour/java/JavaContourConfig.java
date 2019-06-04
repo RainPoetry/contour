@@ -33,7 +33,7 @@ public class JavaContourConfig extends AbstractConfig {
 	public static final String STYLE_EXTERN_DATA = "style.extern.data";
 
 
-	// 下列参数可以通过 COnfigDef 来获取
+	// 下列参数可以通过 ConfigDef 来获取
 	public static final String FILE_PATH = "file.path";
 	public static final String LONGITUDE_LEFT = "longitude.left";
 	public static final String LONGITUDE_RIGHT = "longitude.right";
@@ -41,7 +41,7 @@ public class JavaContourConfig extends AbstractConfig {
 	public static final String LATITUDE_RIGHT = "latitude.right";
 	public static final String WIDTH = "width";
 	public static final String HEIGHT = "height";
-	public static final String UNIT = "";
+	public static final String UNIT = "unit";
 	public static final String LEGEND = "legend";
 
 	static {
